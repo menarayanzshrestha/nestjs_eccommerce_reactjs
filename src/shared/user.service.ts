@@ -23,9 +23,9 @@ export class UserService {
 
         const createdUser = new this.userModel(userDTO);
 
-        return this.sanitizeUser(createdUser);
-
         await createdUser.save();
+
+        return this.sanitizeUser(createdUser);
 
     }
 
@@ -44,5 +44,10 @@ export class UserService {
             throw new HttpException('Invalid credential', HttpStatus.UNAUTHORIZED);
         }
 
+    }
+
+    async findByPayload(payload: any) {
+        const {username} = payload;
+        return await this.userModel.findOne({username});
     }
 }
