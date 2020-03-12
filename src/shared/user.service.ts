@@ -46,6 +46,10 @@ export class UserService {
 
     }
 
+    async findAll() {
+        return this.userModel.find();
+    }
+
     async findByPayload(payload: any) {
         const {username} = payload;
         return await this.userModel.findOne({username});

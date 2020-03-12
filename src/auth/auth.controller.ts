@@ -3,6 +3,8 @@ import { UserService } from 'src/shared/user.service';
 import { loginDTO, RegisterDTO } from './auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { User } from 'src/utilities/user.decorator';
+import { SellerGuard } from 'src/guards/seller.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -11,10 +13,18 @@ export class AuthController {
         private authService: AuthService    
     ){}
 
+    // @Get()
+    // @UseGuards(AuthGuard('jwt'))
+    // tempAuth() {
+    //     return {auth : "working"}
+    // }
+
     @Get()
-    @UseGuards(AuthGuard('jwt'))
-    tempAuth() {
-        return {auth : "working"}
+    @UseGuards(AuthGuard('jwt'), SellerGuard)
+    async findAll(@User() user: any) {
+        console.log(user,"here");
+        
+        return await this.userService.findAll();
     }
 
     @Post('login')
