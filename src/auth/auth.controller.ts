@@ -1,10 +1,11 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
-import { UserService } from 'src/shared/user.service';
+import { UserService } from '../shared/user.service';
 import { loginDTO, RegisterDTO } from './auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { User } from 'src/utilities/user.decorator';
-import { SellerGuard } from 'src/guards/seller.guard';
+import { User } from '../utilities/user.decorator';
+import { SellerGuard } from '../guards/seller.guard';
+import { Payload } from 'src/types/payload';
 
 @Controller('auth')
 export class AuthController {
@@ -19,19 +20,19 @@ export class AuthController {
     //     return {auth : "working"}
     // }
 
-    @Get()
-    @UseGuards(AuthGuard('jwt'), SellerGuard)
-    async findAll(@User() user: any) {
-        console.log(user,"here");
+    // @Get()
+    // @UseGuards(AuthGuard('jwt'), SellerGuard)
+    // async findAll(@User() user: any) {
+    //     console.log(user,"here");
         
-        return await this.userService.findAll();
-    }
+    //     return await this.userService.findAll();
+    // }
 
     @Post('login')
     async login(@Body() userDTO : loginDTO) {
 
         const user = await this.userService.findByLogin(userDTO);
-        const payload = {
+        const payload: Payload = {
             username: user.username,
             seller: user.seller,
         }
@@ -44,7 +45,7 @@ export class AuthController {
     async register(@Body() userDTO : RegisterDTO) {
     
         const user =  await this.userService.create(userDTO);
-        const payload = {
+        const payload: Payload = {
             username: user.username,
             seller : user.seller
         }

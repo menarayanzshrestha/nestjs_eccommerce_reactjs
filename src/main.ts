@@ -4,6 +4,12 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 
+if(process.env.NODE_ENV === 'test'){
+	process.env.MONGO_URI = process.env.MONGO_URL_TEST ;
+
+	console.log("===================Testing in process===========")
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

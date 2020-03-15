@@ -9,7 +9,11 @@ import * as bcrypt from 'bcryptjs';
 export class UserService {
     constructor(@InjectModel('User') private userModel: Model<User>){}
 
-    private sanitizeUser(user : User){
+    sanitizeUser(user : any){
+
+        console.log(user,"here for sanitaization")
+        console.log(user.depopulate('password'),"after");
+        
         return user.depopulate('password');
     }
 
@@ -18,7 +22,7 @@ export class UserService {
         const user = await this.userModel.findOne({username});
 
         if(user) {
-            throw new HttpException('User already exist', HttpStatus.BAD_GATEWAY);
+            return new HttpException('User already exist', HttpStatus.BAD_REQUEST);
         }
 
         const createdUser = new this.userModel(userDTO);
@@ -34,21 +38,21 @@ export class UserService {
         const user = await this.userModel.findOne({username});
 
         if(!user){
-            throw new HttpException('Invalid credential', HttpStatus.UNAUTHORIZED);
+            return new HttpException('Invalid credential', HttpStatus.UNAUTHORIZED);
         }
 
         if(await bcrypt.compare(password, user.password)){
             
             return this.sanitizeUser(user);
         }else {
-            throw new HttpException('Invalid credential', HttpStatus.UNAUTHORIZED);
+            return new HttpException('Invalid credential', HttpStatus.UNAUTHORIZED);
         }
 
     }
 
-    async findAll() {
-        return this.userModel.find();
-    }
+    // async findAll() {
+    //     return this.userModel.find();
+    // }
 
     async findByPayload(payload: any) {
         const {username} = payload;
