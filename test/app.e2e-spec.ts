@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import * as request from 'supertest';
 import { RegisterDTO, loginDTO } from 'src/auth/auth.dto';
 import { HttpStatus, Body } from '@nestjs/common';
@@ -81,7 +80,7 @@ describe('Auth',() => {
     .set('Accept', 'application/json')
       .send(user)
       .expect(({body}) => {
-        console.log(body,"token is here")
+        // console.log(body,"token is here")
         expect(body.token).toBeDefined();
         userToken= body.token;
       })
@@ -95,9 +94,20 @@ describe('Auth',() => {
       .send(sellerLogin)
       .expect(({body}) => {
         expect(body.token).toBeDefined();
-        sellerToken=body.token;
+        
+        sellerToken = body.token;
+        console.log(sellerToken,"here is token we want");
+        
       })
     .expect(HttpStatus.CREATED)
   })
+
+  it('should respect seller token', () => {
+    return request(app)
+      .get('/product/mine')
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${sellerToken}`)
+      .expect(200);
+  });
 
 })

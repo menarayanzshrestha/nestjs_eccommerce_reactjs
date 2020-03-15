@@ -1,5 +1,4 @@
 import * as request from 'supertest';
-import 'dotenv/config';
 import {app} from './constants';
 
 describe('root', () => {
